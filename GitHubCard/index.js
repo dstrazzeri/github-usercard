@@ -3,6 +3,8 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+import axios from 'axios';
+axios.get(`https://api.github.com/users/dstrazzeri`)
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +30,18 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['dstrazzeri','tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+followersArray.forEach(elem => {
+  axios.get(`https://api.github.com/users/${elem}`)
+  .then(resp =>{
+    let info = resp.data
+    const cardsElement = document.querySelector('.cards');
+    cardsElement.appendChild(cardMaker(info))
+  })
+  .catch(err => {
+    console.error(err)
+  })
+})
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,12 +62,50 @@ const followersArray = [];
       </div>
     </div>
 */
+function cardMaker({avatar_url, name, login, location, html_url, followers, following, bio}) {
+  
 
-/*
-  List of LS Instructors Github username's:
-    tetondan
-    dustinmyers
-    justsml
-    luishrd
-    bigknell
-*/
+  const card = document.createElement('div')
+  const avatar = document.createElement('img')
+  const infoCard = document.createElement('div')
+  const h3 = document.createElement('h3')
+  const userName = document.createElement('p')
+  const userLocation = document.createElement('p')
+  const userProfile = document.createElement('p')
+  const userLink = document.createElement('a')
+  const userFollowers = document.createElement('p')
+  const userFollowing = document.createElement('p')
+  const userBio = document.createElement('p')
+
+  avatar.src = avatar_url
+  h3.textContent = name
+  userName.textContent = login
+  userLocation.textContent = `Location: ${location}`
+  userProfile.textContent = `Profile: `
+  userLink.textContent = `${html_url}`
+  userLink.href = html_url
+  userFollowers.textContent = `Followers: ${followers}`
+  userFollowing.textContent = `Following: ${following}`
+  userBio.textContent = `Bio: ${bio}`
+  
+
+  card.classList.add('card')
+  infoCard.classList.add('card-info')
+  h3.classList.add('name')
+  userName.classList.add('username')
+
+
+  card.appendChild(avatar)
+  card.appendChild(infoCard)
+  infoCard.appendChild(h3)
+  infoCard.appendChild(userName)
+  infoCard.appendChild(userLocation)
+  infoCard.appendChild(userProfile)
+  userProfile.appendChild(userLink)
+  infoCard.appendChild(userFollowers)
+  infoCard.appendChild(userFollowing)
+  infoCard.appendChild(userBio)
+
+ 
+  return card;
+}
